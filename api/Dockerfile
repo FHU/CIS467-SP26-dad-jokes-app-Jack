@@ -1,17 +1,22 @@
-# ---- Build Stage ----
-FROM node:20-alpine AS build
-
+# ---- Shared Base ---- 
+FROM node:20-alpine AS base
 WORKDIR /app
-
-# Copy dependency manifests first (layer caching)
 COPY package*.json ./
+
+# ---- Dev Stage ----
+FROM base AS dev
+
 RUN npm install
 
-# Copy source and compile TypeScript
-COPY tsconfig.json ./
-COPY src ./src
-RUN npm run build
+COPY . .
+CMD [ "npm", "run", "dev" ]
 
+# ---- Build Stage ----
+FROM base AS build
+
+RUN npm ci
+COPY  . .
+RUN npm run build
 
 # ---- Production Stage ----
 FROM node:20-alpine AS prod

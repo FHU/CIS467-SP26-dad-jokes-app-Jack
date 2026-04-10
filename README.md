@@ -136,3 +136,6 @@ npm run dev
 # Note: Vite proxies /api to http://api:3000 by default.
 # For local dev, change the proxy target in vite.config.ts to http://localhost:3000.
 ```
+
+## 1. I added the pgAdmin service to manage/monitor the dadjokes database.
+## 2. I added a delete button to the browse section of our app, so that a user can delete any previously generated jokes that they might not want.    

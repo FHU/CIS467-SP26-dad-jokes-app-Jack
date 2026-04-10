@@ -116,16 +116,20 @@ export default function App() {
       .catch(console.error);
   };
 
+  const deleteJoke = (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this joke?")) return;
+    fetch(`${API_BASE}/jokes/${id}`, { method: "DELETE" })
+      .then((r) => r.json())
+      .then(() => fetchAll())
+      .catch(console.error);
+  };
+
   return (
     <div style={styles.page}>
       {/* Header */}
       <header style={styles.header}>
-        <h1 style={styles.title}>
-          🧔 Dad Jokes Central 🧔
-        </h1>
-        <p style={styles.subtitle}>
-          Where every joke is a groan-er
-        </p>
+        <h1 style={styles.title}>🧔 Dad Jokes Central 🧔</h1>
+        <p style={styles.subtitle}>Where every joke is a groan-er</p>
         <div style={styles.statusDot}>
           <span
             style={{
@@ -135,7 +139,8 @@ export default function App() {
             }}
           />
           <span style={{ fontSize: "0.75rem", color: "#aaa" }}>
-            API {healthy === null ? "checking…" : healthy ? "connected" : "offline"}
+            API{" "}
+            {healthy === null ? "checking…" : healthy ? "connected" : "offline"}
           </span>
         </div>
       </header>
@@ -151,7 +156,11 @@ export default function App() {
               ...(view === v ? styles.navBtnActive : {}),
             }}
           >
-            {v === "random" ? "🎲 Random" : v === "browse" ? "📖 Browse" : "✏️ Add"}
+            {v === "random"
+              ? "🎲 Random"
+              : v === "browse"
+                ? "📖 Browse"
+                : "✏️ Add"}
           </button>
         ))}
       </nav>
@@ -205,7 +214,11 @@ export default function App() {
               onClick={fetchRandom}
               disabled={loading}
             >
-              {loading ? "Loading…" : joke ? "Another One! 🔄" : "Get a Joke 🎲"}
+              {loading
+                ? "Loading…"
+                : joke
+                  ? "Another One! 🔄"
+                  : "Get a Joke 🎲"}
             </button>
           </div>
         )}
@@ -237,11 +250,19 @@ export default function App() {
                   <span style={{ fontSize: "0.8rem", color: "#aaa" }}>
                     ★ {Number(j.rating).toFixed(1)} · Told {j.times_told}×
                   </span>
+                  <button
+                    onClick={() => deleteJoke(j.id)}
+                    style={styles.deleteBtn}
+                  >
+                    🗑 Delete
+                  </button>
                 </div>
               </div>
             ))}
             {allJokes.length === 0 && (
-              <p style={{ color: "#aaa", textAlign: "center" }}>No jokes found.</p>
+              <p style={{ color: "#aaa", textAlign: "center" }}>
+                No jokes found.
+              </p>
             )}
           </div>
         )}
@@ -269,13 +290,20 @@ export default function App() {
               onChange={(e) => setNewCategory(e.target.value)}
               style={styles.select}
             >
-              {["general", "science", "food", "animals", "tech", "work", "nature", "sports"].map(
-                (c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                )
-              )}
+              {[
+                "general",
+                "science",
+                "food",
+                "animals",
+                "tech",
+                "work",
+                "nature",
+                "sports",
+              ].map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
             <button style={styles.primaryBtn} onClick={handleSubmit}>
               Submit Joke 🚀
@@ -285,7 +313,9 @@ export default function App() {
       </main>
 
       <footer style={styles.footer}>
-        <p>Dad Jokes Central · Dockerized with ❤️ · Express + React + PostgreSQL</p>
+        <p>
+          Dad Jokes Central · Dockerized with ❤️ · Express + React + PostgreSQL
+        </p>
       </footer>
     </div>
   );
@@ -365,6 +395,15 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "2rem",
     textAlign: "center",
     boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+  },
+  deleteBtn: {
+    background: "transparent",
+    border: "1px solid #ef4444",
+    color: "#ef4444",
+    borderRadius: 6,
+    padding: "0.2rem 0.6rem",
+    fontSize: "0.75rem",
+    cursor: "pointer",
   },
   listCard: {
     background: "#16213e",
